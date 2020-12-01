@@ -56,6 +56,7 @@ public class TicTacToeTest {
         );
     }
 
+    // todo
     @Test
     void game_ends_when_player_took_winning_sequence() {
         ticTacToe.takeField(1);
@@ -64,6 +65,17 @@ public class TicTacToeTest {
         ticTacToe.takeField(5);
         ticTacToe.takeField(3);
         assertTrue(ticTacToe.isGameOver());
+    }
+
+    @Test
+    void the_first_player_to_take_the_winning_sequence_wins_the_game() {
+        Player player = ticTacToe.getPlayer();
+        ticTacToe.takeField(1);
+        ticTacToe.takeField(4);
+        ticTacToe.takeField(2);
+        ticTacToe.takeField(5);
+        ticTacToe.takeField(3);
+        assertEquals(player, ticTacToe.getWinner());
     }
 
     @Test

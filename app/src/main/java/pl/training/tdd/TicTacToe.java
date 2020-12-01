@@ -1,7 +1,7 @@
 package pl.training.tdd;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TicTacToe {
 
@@ -13,16 +13,21 @@ public class TicTacToe {
             Set.of(1, 4, 7), Set.of(2, 5, 8), Set.of(3, 6, 9),
             Set.of(1, 5, 9), Set.of(3, 5, 7)
     );
+    private final Map<Integer, Player> takenFields = new HashMap<>();
 
-    private final Set<Integer> takenFields = new HashSet<>();
     private Player currentPlayer = Player.CIRCLE;
 
     boolean takeField(int index) {
-        if (isFieldIndexOutOfRange(index)) {
+        if (isFieldIndexOutOfRange(index) || isFieldTaken(index)) {
             return false;
         }
         currentPlayer = currentPlayer.reverse();
-        return takenFields.add(index);
+        takenFields.put(index, currentPlayer);
+        return true;
+    }
+
+    private boolean isFieldTaken(int fieldIndex) {
+        return takenFields.get(fieldIndex) != null;
     }
 
     private boolean isFieldIndexOutOfRange(int index) {
@@ -38,11 +43,18 @@ public class TicTacToe {
     }
 
     private boolean containsWinningSequence() {
-        return winningSequences.stream().anyMatch(takenFields::containsAll);
+        var currentPlayerFields = takenFields.values().stream()
+                .filter(player -> player == currentPlayer)
+                .collect(Collectors.toList());
+        return winningSequences.stream().anyMatch(currentPlayerFields::containsAll);
     }
 
     public Player getPlayer() {
         return currentPlayer;
+    }
+
+    public Optional<Player> getWinner() {
+        return Optional.empty();
     }
 
 }
