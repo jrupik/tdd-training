@@ -19,3 +19,16 @@ Założenia:
 4. Stwórz prosty slinik do wyszukiwania słów w dokumentach
 Założenia:
 - Silnik powinien prezentować wyniki jako uporządkowana lista ilości wystąpień szukanego słowa w dokumentach
+
+5. Stwórz blog techniczny
+Założenia:
+- Możliwość tworzenia artykułów (tekst, wideo , grafiki) oraz zarządzania nimi (prosty cms)
+- Artykuły powinny być przechowywane w postaci plików markdown
+- Powinna być trzymana historia zmian artykułu
+- Artykuł nie powinien być widoczny do czasu publikacji (domyślnie jest przechowywany jako draft)
+- Możliwość wyszukiwania artykułów po słowach kluczowych
+- Możliwość wyświetlania najnowszych artykułów
+- Możliwość wyświetlania artykułów w określonej kategorii (sortowanie po dacie)
+- Możliwość wyświetlania artykułów z określonymi tagami
+- Możliwość ograniczenia dostępu do treści użytkownikom (artykuły publiczne i płatne)
+- Możliwość integracji z bramką płatniczą (subskrypcja)
