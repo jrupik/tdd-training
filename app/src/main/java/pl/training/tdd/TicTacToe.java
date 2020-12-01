@@ -1,7 +1,10 @@
 package pl.training.tdd;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Stream.concat;
+import static pl.training.tdd.Player.CROSS;
 
 public class TicTacToe {
 
@@ -13,48 +16,59 @@ public class TicTacToe {
             Set.of(1, 4, 7), Set.of(2, 5, 8), Set.of(3, 6, 9),
             Set.of(1, 5, 9), Set.of(3, 5, 7)
     );
-    private final Map<Integer, Player> takenFields = new HashMap<>();
+
+    private final Set<Integer> crossFields = new HashSet<>();
+    private final Set<Integer> circleFields = new HashSet<>();
 
     private Player currentPlayer = Player.CIRCLE;
 
-    boolean takeField(int index) {
-        if (isFieldIndexOutOfRange(index) || isFieldTaken(index)) {
-            return false;
-        }
-        currentPlayer = currentPlayer.reverse();
-        takenFields.put(index, currentPlayer);
-        return true;
-    }
-
-    private boolean isFieldTaken(int fieldIndex) {
-        return takenFields.get(fieldIndex) != null;
-    }
-
-    private boolean isFieldIndexOutOfRange(int index) {
-        return MINIMAL_FIELD_INDEX > index || MAXIMUM_FIELD_INDEX < index;
-    }
-
     public boolean isGameOver() {
-        return allFieldsAreTaken() || containsWinningSequence();
+        return allFieldsAreTaken() || playerTookWinningSequence();
     }
 
     private boolean allFieldsAreTaken() {
-        return takenFields.size() == MAXIMUM_FIELD_INDEX;
+        return MAXIMUM_FIELD_INDEX - takenFields().size() == 0;
     }
 
-    private boolean containsWinningSequence() {
-        var currentPlayerFields = takenFields.values().stream()
-                .filter(player -> player == currentPlayer)
-                .collect(Collectors.toList());
-        return winningSequences.stream().anyMatch(currentPlayerFields::containsAll);
+    private Set<Integer> takenFields() {
+        return concat(crossFields.stream(), circleFields.stream()).collect(toSet());
     }
 
-    public Player getPlayer() {
+    private boolean playerTookWinningSequence() {
+        return winningSequences.stream()
+                .anyMatch(sequence -> playerFields(currentPlayer.reverse()).containsAll(sequence));
+    }
+
+    private Set<Integer> playerFields(Player player) {
+        return player == CROSS ? crossFields : circleFields;
+    }
+
+    public boolean takeField(int index) {
+        if (isFieldTaken(index) || !isFieldOnBoard(index)) {
+            return false;
+        }
+        playerFields(currentPlayer).add(index);
+        currentPlayer = currentPlayer.reverse();
+        return true;
+    }
+
+    private boolean isFieldTaken(int index) {
+        return takenFields().contains(index);
+    }
+
+    private boolean isFieldOnBoard(int index) {
+        return index >= MINIMAL_FIELD_INDEX && index <= MAXIMUM_FIELD_INDEX;
+    }
+
+    public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
     public Optional<Player> getWinner() {
-        return Optional.empty();
+        if (!isGameOver()) {
+            return Optional.empty();
+        }
+        return Optional.of(currentPlayer.reverse());
     }
 
 }
